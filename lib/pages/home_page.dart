@@ -7,9 +7,6 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import '../constant/dimens.dart';
-import '../view_item/location_section_view_item.dart';
-import '../view_item/show_case_movie_view_item.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -142,38 +139,12 @@ class _HomePageState extends State<HomePage> {
                 )
             ),
 
-            const SizedBox(
-              height: kSP15x,
-            ),
 
             ///Location Section
-            const SizedBox(
-              height: kLocationSectionHeight,
-              child: LocationSectionItemView(),
-            ),
 
-            const SizedBox(
-              height: kSP15x,
-            ),
 
             ///Show Case Section
-            FutureBuilder<List<MovieVO>?>(
-                future: movieDBApply.getPopularMOVies(1),
-                builder: (context, snapShot) {
-                  if (snapShot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (snapShot.hasError) {
-                    return const Center(
-                      child: Text('Error Occur'),
-                    );
-                  }
-                  final listShowCaseMovie = snapShot.data?.toList();
-                  return ShowCaseMovieItemView(listShowCaseMovie: listShowCaseMovie);
-                }
-            ),
+
           ],
         ),
 
@@ -225,11 +196,11 @@ class BestPopularMoviesView extends StatelessWidget {
       children: [
         BestPopularMoviesImageView(image: movie.backdropPath ?? ''),
         const SizedBox(
-          height: kSP5x,
+          height: 5,
         ),
         BestPopularMoviesTitleView(title: movie.originalTitle ?? ''),
         const SizedBox(
-          height: kSP5x,
+          height: 5,
         ),
         BestPopularMoviesRateAndRatingBarView(rate: movie.voteAverage ?? 0.0)
       ],

@@ -22,25 +22,8 @@ class MovieDBApplyImpl extends MovieDBApply {
         return temp;
       });
 
-  Future<List<MovieVO>?> getPopularMovies(int page) =>
-      _movieDataAgent.getPopularMovies(page).then((value) {
-        final temp1 = value?.map((e) {
-          e.isPopularMovies = true;
-          return e;
-        }).toList();
-        return temp1;
-      });
-
   @override
-  Future<int?> getTotalPage(int page) => _movieDataAgent.getTotalPage(page);
-
-  @override
-  Future<List<MovieVO>?> getPopularMOVies(int page) =>
-      _movieDataAgent.getPopularMovies(page).then((value) {
-        final temp1 = value?.map((e) {
-          e.isPopularMovies = true;
-          return e;
-        }).toList();
-        return temp1;
-      });
+  Future<int?> getTotalPage(int page) {
+    return _movieDataAgent.getTotalPage(page);
+  }
 }
