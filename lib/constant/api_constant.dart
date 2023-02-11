@@ -3,6 +3,7 @@ const kBaseURL='https://api.themoviedb.org/3';
 
 ///End Points
 const kGetNowPlayingEndPoint='/movie/now_playing';
+const kGetPopularMovieEndPoint = '/movie/popular';
 
 
 //Token API Key

@@ -7,6 +7,12 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../constant/color.dart';
+import '../constant/dimen.dart';
+import '../view_item/location_section.dart';
+import '../view_item/show_case_section.dart';
+import '../widgets/easy_text_widget.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -137,9 +143,10 @@ class _HomePageState extends State<HomePage> {
             ),
 
             //Location Section
+            const LocationSection(),
 
             ///Show Case Section
-
+            ShowCaseSection(movieDBApply: movieDBApply)
 
           ],
         ),
@@ -148,12 +155,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+
+
 class BestPopularMoviesAndSerialItemView extends StatelessWidget {
   const BestPopularMoviesAndSerialItemView({
-    super.key,
+    Key? key,
     required this.controller,
     required this.listBestPopularMovies,
-  });
+  }) : super(key: key);
 
   final List<MovieVO> listBestPopularMovies;
   final ScrollController controller;

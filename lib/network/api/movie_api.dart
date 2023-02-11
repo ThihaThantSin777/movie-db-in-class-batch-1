@@ -16,4 +16,10 @@ abstract class MovieAPI {
     @Query(kQueryParamsAPIKey) String apiKey,
     @Query(kQueryParamsPage) int page,
   );
+  
+  @GET(kGetPopularMovieEndPoint)
+  Future<MovieResponse> getPopularMovie(
+      @Query(kQueryParamsAPIKey) String apiKey,
+      @Query(kQueryParamsPage) int page,
+      );
 }
