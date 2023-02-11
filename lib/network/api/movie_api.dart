@@ -8,11 +8,15 @@ part 'movie_api.g.dart';
 
 @RestApi(baseUrl: kBaseURL)
 abstract class MovieAPI {
-
-  factory MovieAPI(Dio dio)=>_MovieAPI(dio);
+  factory MovieAPI(Dio dio) => _MovieAPI(dio);
 
   @GET(kGetNowPlayingEndPoint)
   Future<MovieResponse> getNowPlayingMovies(
+    @Query(kQueryParamsAPIKey) String apiKey,
+    @Query(kQueryParamsPage) int page,
+  );
+  @GET(kGetPopularMovieEndPoint)
+  Future<MovieResponse> getPopularMovie(
     @Query(kQueryParamsAPIKey) String apiKey,
     @Query(kQueryParamsPage) int page,
   );
