@@ -30,12 +30,11 @@ class ShowCaseSection extends StatelessWidget {
               EasyTextWidget(
                 data: "  SHOWCASE",
                 fontSize: dFs16x,
-                color: cWhite,
+
               ),
               EasyTextWidget(
                 data: 'MORE SHOWCASES  ',
                 fontSize: dFs16x,
-                color: cWhite,
                 textDecoration: TextDecoration.underline,
               )
             ],
@@ -117,7 +116,6 @@ class ShowCaseItems extends StatelessWidget {
                 children: [
                   EasyTextWidget(
                     data: title,
-                    color: cWhite,
                     fontSize: dFs16x,
                   ),
                   EasyTextWidget(

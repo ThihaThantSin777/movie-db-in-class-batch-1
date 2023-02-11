@@ -14,7 +14,7 @@ final TextDecoration textDecoration;
       style: TextStyle(
         fontSize: fontSize,
         fontWeight: fontWeight,
-        color: color,
+        color: color ?? Colors.white,
         decoration: textDecoration
       ),
     );

@@ -26,7 +26,7 @@ class LocationSection extends StatelessWidget {
                     EasyTextWidget(data: "Checked Movie\nShowtimes",
                       fontSize: dFs20x,
                       fontWeight: FontWeight.bold,
-                      color: cWhite,),
+                      ),
                     Spacer(),
                     EasyTextWidget(data: "SEE MORE",
                       fontWeight: FontWeight.bold,
