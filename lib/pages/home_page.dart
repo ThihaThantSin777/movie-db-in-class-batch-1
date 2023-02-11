@@ -7,6 +7,12 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../constant/Strings.dart';
+import '../constant/colors.dart';
+import '../constant/dimes.dart';
+import '../widgets/easy_text_widget.dart';
+import '../widgets/icon_widget.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -35,14 +41,12 @@ class _HomePageState extends State<HomePage> {
         if (pixel != 0) {
           page++;
           movieDBApply.getNowPlayingMovies(page).then((value) {
-            if(value?.isNotEmpty??false){
-              final temp=value;
+            if (value?.isNotEmpty ?? false) {
+              final temp = value;
               temp?.forEach((element) {
                 bestPopularMoviesList.add(element);
               });
-              setState(() {
-
-              });
+              setState(() {});
             }
           });
         }
@@ -114,37 +118,170 @@ class _HomePageState extends State<HomePage> {
             ///Best Popular Movies And Serial Section
             SizedBox(
                 height: 300,
-                child: (bestPopularMoviesList.isEmpty)?const Center(child: CircularProgressIndicator(),): Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '  Best Popular Movies And Serial'.toUpperCase(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                        child: BestPopularMoviesAndSerialItemView(
-                            controller: _scrollController,
-                            listBestPopularMovies: bestPopularMoviesList))
-                  ],
-                )
-            ),
+                child: (bestPopularMoviesList.isEmpty)
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '  Best Popular Movies And Serial'.toUpperCase(),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                              child: BestPopularMoviesAndSerialItemView(
+                                  controller: _scrollController,
+                                  listBestPopularMovies: bestPopularMoviesList))
+                        ],
+                      )),
 
-            //Location Section
+            ///Location Section
+            const CheckMovieShowtimeItemView(),
 
             ///Show Case Section
 
-
+            ShowCasesMoviesItemView(
+              movieDBApply: movieDBApply,
+            )
           ],
         ),
       ),
     );
+  }
+}
+
+class ShowCasesMoviesItemView extends StatelessWidget {
+  const ShowCasesMoviesItemView({super.key, required this.movieDBApply});
+
+  final MovieDBApply movieDBApply;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<MovieVO>?>(
+        future: movieDBApply.getPopularMovies(1),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Text(kErrorText);
+          }
+          final popularMovies = snapshot.data;
+          return SizedBox(
+            height: kShowcaseMoviesSectionHeight350x,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const SizedBox(
+                  height: kSP10x,
+                ),
+                Row(
+                  children: const [
+                    EasyTextWidget(
+                        text: kShowcaseString,
+                        fontsize: kFontsize15x,
+                        fontWeight: kFontWeightW300,
+                        color: kFontColor),
+                    Spacer(),
+                    EasyTextWidget(
+                        text: kShowCaseMoreString,
+                        fontsize: kFontsize15x,
+                        fontWeight: kFontWeightBold,
+                        decoration: TextDecoration.underline)
+                  ],
+                ),
+                const SizedBox(
+                  height: kSP5x,
+                ),
+                SizedBox(
+                  height: kShowcaseMoviesBoxHeight250x,
+                  child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext buildContext, int index) =>
+                          ShowCasesMoviesView(
+                            title: popularMovies?[index].originalTitle ?? '',
+                            image: popularMovies?[index].backdropPath ?? '',
+                            releaseDate:
+                                popularMovies?[index].releaseDate ?? '',
+                          ),
+                      separatorBuilder: (buildContext, index) => const SizedBox(
+                            width: kSP5x,
+                          ),
+                      itemCount: popularMovies?.length ?? 0),
+                )
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class ShowCasesMoviesView extends StatelessWidget {
+  const ShowCasesMoviesView(
+      {super.key,
+      required this.image,
+      required this.title,
+      required this.releaseDate});
+
+  final String image;
+  final String title;
+  final String releaseDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: kShowcaseMoviesBoxHeight250x,
+        child: Container(
+          margin: const EdgeInsets.only(left: kSP10x),
+          width: kShowcaseMoviesImagesWidth300x,
+          height: kShowcaseMoviesImagesHeight250x,
+          child: Stack(children: [
+            SizedBox(
+              width: kShowcaseMoviesImagesWidth300x,
+              height: kShowcaseMoviesImagesHeight250x,
+              child: CachedNetworkImage(
+                imageUrl:
+                    (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
+                fit: BoxFit.cover,
+                placeholder: (context, string) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+            Positioned(
+              left: kSP5x,
+              bottom: kSP20x,
+              child: Column(
+                children: [
+                  EasyTextWidget(
+                    text: title,
+                    fontWeight: FontWeight.bold,
+                    fontsize: kFontsize15x,
+                  ),
+                  EasyTextWidget(
+                    text: releaseDate,
+                    fontWeight: FontWeight.bold,
+                    fontsize: kFontsize15x,
+                  ),
+                ],
+              ),
+            ),
+            const Center(
+                child: Icon(
+              Icons.play_circle,
+              size: kIconSize50x,
+              color: kDefaultIconColor,
+            )),
+          ]),
+        ));
   }
 }
 
@@ -163,7 +300,7 @@ class BestPopularMoviesAndSerialItemView extends StatelessWidget {
     return ListView.builder(
       controller: controller,
       scrollDirection: Axis.horizontal,
-      itemCount: listBestPopularMovies?.length ?? 0,
+      itemCount: listBestPopularMovies.length ,
       itemBuilder: (context, index) {
         return Container(
             margin: const EdgeInsets.only(right: 10, left: 10),
@@ -368,6 +505,57 @@ class BannerView extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class CheckMovieShowtimeItemView extends StatelessWidget {
+  const CheckMovieShowtimeItemView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(kSP5x),
+      width: kCheckMovieShowtimeItemViewWidth350x,
+      height: kCheckMovieShowtimeItemViewHeight200x,
+      color: kAppBarColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SizedBox(
+            width: kCheckMoviesShowtimeStringsWidth150x,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                SizedBox(
+                  height: kSP25x,
+                ),
+                EasyTextWidget(
+                  text: kShowTimeString,
+                  fontWeight: kFontWeightBold,
+                  fontsize: kFontsize20x,
+                ),
+                SizedBox(
+                  height: kSP70x,
+                ),
+                EasyTextWidget(
+                    text: kSeeMoreString,
+                    color: kDefaultIconColor,
+                    fontsize: kFontsize15x,
+                    decoration: TextDecoration.underline,
+                    fontWeight: kFontWeightBold)
+              ],
+            ),
+          ),
+          const IconWidget(
+            icon: Icons.location_on,
+            color: kFontColor,
+            size: kIconSize50x,
+          )
+        ],
+      ),
     );
   }
 }
