@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                     }
                     if (snapShot.hasError) {
                       return const Center(
-                        child: Text('Error Occur'),
+                        child: Text('Error Occur Error Occur Error Occur Error Occur Error Occur '),
                       );
                     }
                     final listMovieBanner = snapShot.data?.take(5).toList();
