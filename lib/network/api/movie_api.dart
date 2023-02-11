@@ -15,5 +15,11 @@ abstract class MovieAPI {
   Future<MovieResponse> getNowPlayingMovies(
     @Query(kQueryParamsAPIKey) String apiKey,
     @Query(kQueryParamsPage) int page,
+      );
+
+  @GET(kPopularMovieEndPoint)
+  Future<MovieResponse> getPopularMovies(
+      @Query(kQueryParamsAPIKey) String apiKey,
+      @Query(kQueryParamsPage) int page,
   );
 }
