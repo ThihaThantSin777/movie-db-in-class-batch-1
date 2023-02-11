@@ -7,6 +7,10 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../constant/dimens.dart';
+import '../view_items/location_section_view_item.dart';
+import '../view_items/show_case_movie_view_item.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -136,10 +140,34 @@ class _HomePageState extends State<HomePage> {
                 )
             ),
 
-            //Location Section
+            ///Location Section
+            const SizedBox(
+              height: kLocationSectionHeight,
+              child: LocationSectionItemView(),
+            ),
+
+            const SizedBox(
+              height: kSP15x,
+            ),
 
             ///Show Case Section
-
+            FutureBuilder<List<MovieVO>?>(
+                future: movieDBApply.getPopularMovies(1),
+                builder: (context, snapShot) {
+                  if (snapShot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapShot.hasError) {
+                    return const Center(
+                      child: Text('Error Occur'),
+                    );
+                  }
+                  final listShowCaseMovie = snapShot.data?.toList();
+                  return ShowCaseMovieItemView(listShowCaseMovie: listShowCaseMovie);
+                }
+            ),
 
           ],
         ),
