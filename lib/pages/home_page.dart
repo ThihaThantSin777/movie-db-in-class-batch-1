@@ -7,6 +7,10 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../constant/dimens.dart';
+import '../view_item/location_section_view_item.dart';
+import '../view_item/show_case_movie_view_item.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -35,8 +39,8 @@ class _HomePageState extends State<HomePage> {
         if (pixel != 0) {
           page++;
           movieDBApply.getNowPlayingMovies(page).then((value) {
-            if(value?.isNotEmpty??false){
-              final temp=value;
+            if (value?.isNotEmpty ?? false) {
+              final temp = value;
               temp?.forEach((element) {
                 bestPopularMoviesList.add(element);
               });
@@ -88,6 +92,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             ///Banner Section
             SizedBox(
               height: 250,
@@ -114,7 +119,8 @@ class _HomePageState extends State<HomePage> {
             ///Best Popular Movies And Serial Section
             SizedBox(
                 height: 300,
-                child: (bestPopularMoviesList.isEmpty)?const Center(child: CircularProgressIndicator(),): Column(
+                child: (bestPopularMoviesList.isEmpty) ? const Center(
+                  child: CircularProgressIndicator(),) : Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -131,22 +137,52 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                         child: BestPopularMoviesAndSerialItemView(
                             controller: _scrollController,
-                            listBestPopularMovies: bestPopularMoviesList))
+                            listBestPopularMovies: bestPopularMoviesList)),
                   ],
                 )
             ),
 
-            //Location Section
+            const SizedBox(
+              height: kSP15x,
+            ),
+
+            ///Location Section
+            const SizedBox(
+              height: kLocationSectionHeight,
+              child: LocationSectionItemView(),
+            ),
+
+            const SizedBox(
+              height: kSP15x,
+            ),
 
             ///Show Case Section
-
-
+            FutureBuilder<List<MovieVO>?>(
+                future: movieDBApply.getPopularMOVies(1),
+                builder: (context, snapShot) {
+                  if (snapShot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapShot.hasError) {
+                    return const Center(
+                      child: Text('Error Occur'),
+                    );
+                  }
+                  final listShowCaseMovie = snapShot.data?.toList();
+                  return ShowCaseMovieItemView(listShowCaseMovie: listShowCaseMovie);
+                }
+            ),
           ],
         ),
+
       ),
     );
   }
 }
+
+
 
 class BestPopularMoviesAndSerialItemView extends StatelessWidget {
   const BestPopularMoviesAndSerialItemView({
@@ -189,11 +225,11 @@ class BestPopularMoviesView extends StatelessWidget {
       children: [
         BestPopularMoviesImageView(image: movie.backdropPath ?? ''),
         const SizedBox(
-          height: 5,
+          height: kSP5x,
         ),
         BestPopularMoviesTitleView(title: movie.originalTitle ?? ''),
         const SizedBox(
-          height: 5,
+          height: kSP5x,
         ),
         BestPopularMoviesRateAndRatingBarView(rate: movie.voteAverage ?? 0.0)
       ],
@@ -223,7 +259,8 @@ class BestPopularMoviesRateAndRatingBarView extends StatelessWidget {
           allowHalfRating: true,
           itemCount: 5,
           itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-          itemBuilder: (context, _) => const Icon(
+          itemBuilder: (context, _) =>
+          const Icon(
             Icons.star,
             color: Colors.amber,
           ),
@@ -261,7 +298,8 @@ class BestPopularMoviesImageView extends StatelessWidget {
       child: CachedNetworkImage(
         imageUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
         fit: BoxFit.cover,
-        placeholder: (context, string) => const Center(
+        placeholder: (context, string) =>
+        const Center(
           child: CircularProgressIndicator(),
         ),
       ),
@@ -287,7 +325,8 @@ class BannerMovieItemView extends StatelessWidget {
           child: PageView.builder(
               controller: controller,
               itemCount: movieList.length,
-              itemBuilder: (context, index) => BannerView(
+              itemBuilder: (context, index) =>
+                  BannerView(
                     title: movieList[index].originalTitle ?? '',
                     image: movieList[index].backdropPath ?? '',
                   )),
@@ -334,26 +373,29 @@ class BannerView extends StatelessWidget {
       children: [
         Positioned.fill(
             child: CachedNetworkImage(
-          imageUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
-          fit: BoxFit.cover,
-          placeholder: (context, string) => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        )),
+              imageUrl: (image.isEmpty)
+                  ? kDefaultImage
+                  : '$kPrefixImageLink$image',
+              fit: BoxFit.cover,
+              placeholder: (context, string) =>
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            )),
         Positioned.fill(
             child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.transparent, Colors.black],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter)),
-        )),
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Colors.transparent, Colors.black],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter)),
+            )),
         const Positioned.fill(
             child: Icon(
-          Icons.play_circle,
-          color: Colors.amber,
-          size: 40,
-        )),
+              Icons.play_circle,
+              color: Colors.amber,
+              size: 40,
+            )),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Align(

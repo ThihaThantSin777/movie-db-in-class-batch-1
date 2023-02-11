@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:movie_db/constant/api_constant.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:movie_db/network/data_agent/movie_data_agent.dart';
-
 import '../api/movie_api.dart';
 
 class MovieDataAgentImpl extends MovieDataAgent {
@@ -29,4 +28,12 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .asStream()
       .map((event) => event.totalPages)
       .first;
-}
+
+  @override
+  Future<List<MovieVO>?> getPopularMovies(int page)=> _api
+      .getPopularMovies(kApiKey, page)
+      .asStream()
+      .map((event) => event.results)
+      .first;
+  }
+

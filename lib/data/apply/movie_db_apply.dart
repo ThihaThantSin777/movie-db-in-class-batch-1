@@ -7,7 +7,10 @@ abstract class MovieDBApply{
 
   Future<int?>getTotalPage(int page);
 
+  Future<List<MovieVO>?>getPopularMOVies(int page);
 
-  /// For DataBase
+
+
+/// For DataBase
 
 }
