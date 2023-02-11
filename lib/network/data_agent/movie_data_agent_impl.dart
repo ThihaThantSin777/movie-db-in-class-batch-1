@@ -22,4 +22,11 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .asStream()
       .map((event) => event.results)
       .first;
+
+  @override
+  Future<int?> getTotalPage(int page) => _api
+      .getNowPlayingMovies(kApiKey, page)
+      .asStream()
+      .map((event) => event.totalPages)
+      .first;
 }

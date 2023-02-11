@@ -5,6 +5,8 @@ abstract class MovieDBApply{
   ///For Network
   Future<List<MovieVO>?>getNowPlayingMovies(int page);
 
+  Future<int?>getTotalPage(int page);
+
 
   /// For DataBase
 

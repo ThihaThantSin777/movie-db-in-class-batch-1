@@ -24,4 +24,7 @@ class MovieDBApplyImpl extends MovieDBApply{
     return temp;
   });
 
+  @override
+  Future<int?> getTotalPage(int page) =>_movieDataAgent.getTotalPage(page);
+
 }

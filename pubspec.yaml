@@ -34,6 +34,9 @@ dependencies:
   retrofit_generator: ^4.2.0
   dio: ^4.0.6
   build_runner: ^2.3.3
+  cached_network_image: ^3.2.3
+  smooth_page_indicator: ^1.0.0+2
+  flutter_rating_bar: ^4.0.1
   flutter:
     sdk: flutter
 
@@ -41,6 +44,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+
 
 dev_dependencies:
   flutter_test:

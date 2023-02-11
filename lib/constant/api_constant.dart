@@ -16,3 +16,4 @@ const kQueryParamsPage='page';
 
 ///Image Constant
 const kPrefixImageLink='https://image.tmdb.org/t/p/w500';
+const kDefaultImage='https://user-images.githubusercontent.com/43302778/106805462-7a908400-6645-11eb-958f-cd72b74a17b3.jpg';
