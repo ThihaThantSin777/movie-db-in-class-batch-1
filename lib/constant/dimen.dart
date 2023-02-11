@@ -6,7 +6,7 @@ const double dMp20x = 20;
 // width and height
 const double dWh270x = 270;
 const double dWh200x = 200;
-const double dWh240x = 240;
+const double dWh260x = 260;
 
 // font and icon size
 const double dFs16x = 16;

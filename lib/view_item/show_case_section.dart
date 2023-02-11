@@ -19,10 +19,12 @@ class ShowCaseSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: dWh240x,
+    return Container(
+      color: cSecondary,
+      height: dWh260x,
       child: Column(
         children: [
+          const SizedBox(height: dMp10x,),
           // title of the showcase
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
