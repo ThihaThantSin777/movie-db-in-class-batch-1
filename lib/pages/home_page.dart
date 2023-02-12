@@ -190,27 +190,27 @@ class _HomePageState extends State<HomePage> {
                     Text('More Showcase'.toUpperCase(),style: const TextStyle(decoration: TextDecoration.underline,color: Colors.white),),
                  ],
                  ),
-                 Container(
-                   padding:const EdgeInsets.all(10),
-                   child: FutureBuilder<List<MovieVO>?>(
-                       future: movieDBApply.getNowPlayingMovies(1),
-                       builder: (context, snapShot) {
-                         if (snapShot.connectionState == ConnectionState.waiting) {
-                           return const Center(
-                             child: CircularProgressIndicator(),
-                           );
-                         }
-                         if (snapShot.hasError) {
-                           return const Center(
-                             child: Text('Error Occur'),
-                           );
-                         }
-                         final listUpcomingMovie = snapShot.data?.toList();
-                         return ShowcaseMovieItemView(
-                           showcaseMovie: listUpcomingMovie??[],
-                           controller: _pageController,);
-                       }),
-                 ),
+             Container(
+               padding:const EdgeInsets.all(10),
+               child: FutureBuilder<List<MovieVO>?>(
+                         future: movieDBApply.getNowPlayingMovies(1),
+                         builder: (context, snapShot) {
+                           if (snapShot.connectionState == ConnectionState.waiting) {
+                             return const Center(
+                               child: CircularProgressIndicator(),
+                             );
+                           }
+                           if (snapShot.hasError) {
+                             return const Center(
+                               child: Text('Error Occur'),
+                             );
+                           }
+                           final listUpcomingMovie = snapShot.data?.toList();
+                           return ShowcaseMovieItemView(
+                             showcaseMovie: listUpcomingMovie??[],
+                             controller: _pageController,);
+                         }),
+             ),
                ],
              ),
            )
@@ -225,6 +225,7 @@ class ShowcaseMovieItemView extends StatelessWidget{
   const ShowcaseMovieItemView({Key?key,required this.showcaseMovie,required this.controller}):super (key: key);
   final List<MovieVO> showcaseMovie;
   final PageController controller;
+
 
   @override
   Widget build(BuildContext context) {
