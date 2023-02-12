@@ -54,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _pageController.dispose();
     _scrollController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -136,16 +137,150 @@ class _HomePageState extends State<HomePage> {
                 )
             ),
 
-            //Location Section
+            ///Location Section
+            Container(
+              margin:const EdgeInsets.symmetric(horizontal: 10),
+              padding:const EdgeInsets.only(left: 20,top: 10,right: 20),
+              height: 100,
+              width: 500,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color:const Color.fromRGBO(30, 31, 48, 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    width: 80,
+                    child: Text('Check Movie Show Time',style: TextStyle(
+                      color: Colors.white
+                    ),),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children:const [
+                      Icon(Icons.location_on_rounded,color: Colors.white,size: 30,)
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 80,
+                    child: Text('See More',style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                    ),),
+                  ),
+                ],
+              ),
+            ),
 
             ///Show Case Section
-
-
+           SizedBox(
+             height: 300,
+             child:
+             Column(
+               mainAxisSize: MainAxisSize.min,
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                   Text(' Showcase'.toUpperCase(),style:const TextStyle(color: Colors.white,fontWeight: FontWeight.w200),),
+                    Text('More Showcase'.toUpperCase(),style: const TextStyle(decoration: TextDecoration.underline,color: Colors.white),),
+                 ],
+                 ),
+             Container(
+               padding:const EdgeInsets.all(10),
+               child: FutureBuilder<List<MovieVO>?>(
+                         future: movieDBApply.getNowPlayingMovies(1),
+                         builder: (context, snapShot) {
+                           if (snapShot.connectionState == ConnectionState.waiting) {
+                             return const Center(
+                               child: CircularProgressIndicator(),
+                             );
+                           }
+                           if (snapShot.hasError) {
+                             return const Center(
+                               child: Text('Error Occur'),
+                             );
+                           }
+                           final listUpcomingMovie = snapShot.data?.toList();
+                           return ShowcaseMovieItemView(
+                             showcaseMovie: listUpcomingMovie??[],
+                             controller: _pageController,);
+                         }),
+             ),
+               ],
+             ),
+           )
           ],
         ),
       ),
     );
   }
+}
+
+class ShowcaseMovieItemView extends StatelessWidget{
+  const ShowcaseMovieItemView({Key?key,required this.showcaseMovie,required this.controller}):super (key: key);
+  final List<MovieVO> showcaseMovie;
+  final PageController controller;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return
+    SizedBox(
+      height: 240,
+      width: MediaQuery.of(context).size.width,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        controller: controller,
+          separatorBuilder: (context,index)=>const SizedBox(width: 10 ,),
+          itemCount: showcaseMovie?.length??0,
+        itemBuilder: ( context, index)=>ShowcaseView(title: showcaseMovie[index].originalTitle??'', imageUrl: showcaseMovie[index].backdropPath??''),
+      ),
+
+    );
+  }
+}
+
+class ShowcaseView  extends StatelessWidget{
+  const ShowcaseView({Key?key,required this.title,required this.imageUrl}):super (key: key);
+  final String title;
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Stack(
+      children: [
+        Positioned.fill(
+            child: CachedNetworkImage(
+              imageUrl: (imageUrl.isEmpty) ? kDefaultImage : '$kPrefixImageLink$imageUrl',
+              fit: BoxFit.cover,
+              placeholder: (context, string) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            )),
+        const Positioned.fill(
+            child: Icon(
+              Icons.play_circle,
+              color: Colors.amber,
+              size: 40,
+            )),
+           Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(title,style:const TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.w200,
+            ),),
+          ),
+      ],
+    );
+  }
+
 }
 
 class BestPopularMoviesAndSerialItemView extends StatelessWidget {
