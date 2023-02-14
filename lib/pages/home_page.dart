@@ -7,6 +7,14 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+
+import '../constant/color.dart';
+import '../constant/dimen.dart';
+import '../view_item/banner_section.dart';
+import '../view_item/location_section.dart';
+import '../view_item/show_case_section.dart';
+
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -60,7 +68,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: cPrimary,
       appBar: AppBar(
         actions: const [
           Icon(
@@ -77,7 +85,7 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Colors.black,
+        backgroundColor: cSecondary,
         title: const Text(
           'Discover',
           style: TextStyle(color: Colors.white),
@@ -89,27 +97,8 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///Banner Section
-            SizedBox(
-              height: 250,
-              child: FutureBuilder<List<MovieVO>?>(
-                  future: movieDBApply.getNowPlayingMovies(1),
-                  builder: (context, snapShot) {
-                    if (snapShot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapShot.hasError) {
-                      return const Center(
-                        child: Text('Error Occur'),
-                      );
-                    }
-                    final listMovieBanner = snapShot.data?.take(5).toList();
-                    return BannerMovieItemView(
-                        controller: _pageController,
-                        movieList: listMovieBanner ?? []);
-                  }),
-            ),
+            const BannerSection(),
+            const SizedBox(height: dMp20x,),
 
             ///Best Popular Movies And Serial Section
             SizedBox(
@@ -137,9 +126,10 @@ class _HomePageState extends State<HomePage> {
             ),
 
             //Location Section
+            const LocationSection(),
 
             ///Show Case Section
-
+            ShowCaseSection(movieDBApply: movieDBApply)
 
           ],
         ),
@@ -148,12 +138,14 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+
+
 class BestPopularMoviesAndSerialItemView extends StatelessWidget {
   const BestPopularMoviesAndSerialItemView({
-    super.key,
+    Key? key,
     required this.controller,
     required this.listBestPopularMovies,
-  });
+  }) : super(key: key);
 
   final List<MovieVO> listBestPopularMovies;
   final ScrollController controller;
@@ -269,105 +261,4 @@ class BestPopularMoviesImageView extends StatelessWidget {
   }
 }
 
-class BannerMovieItemView extends StatelessWidget {
-  const BannerMovieItemView(
-      {Key? key, required this.movieList, required this.controller})
-      : super(key: key);
-  final List<MovieVO> movieList;
-  final PageController controller;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 200,
-          child: PageView.builder(
-              controller: controller,
-              itemCount: movieList.length,
-              itemBuilder: (context, index) => BannerView(
-                    title: movieList[index].originalTitle ?? '',
-                    image: movieList[index].backdropPath ?? '',
-                  )),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            onDotClicked: (index) {
-              controller.animateToPage(index,
-                  duration: const Duration(seconds: 1), curve: Curves.easeIn);
-            },
-            controller: controller,
-            count: movieList.length,
-            axisDirection: Axis.horizontal,
-            effect: const SlideEffect(
-                spacing: 8.0,
-                radius: 30,
-                dotWidth: 15.0,
-                dotHeight: 15.0,
-                strokeWidth: 1.5,
-                dotColor: Colors.grey,
-                activeDotColor: Colors.amber),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class BannerView extends StatelessWidget {
-  const BannerView({
-    Key? key,
-    required this.image,
-    required this.title,
-  }) : super(key: key);
-  final String image;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-            child: CachedNetworkImage(
-          imageUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
-          fit: BoxFit.cover,
-          placeholder: (context, string) => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        )),
-        Positioned.fill(
-            child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.transparent, Colors.black],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter)),
-        )),
-        const Positioned.fill(
-            child: Icon(
-          Icons.play_circle,
-          color: Colors.amber,
-          size: 40,
-        )),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-}

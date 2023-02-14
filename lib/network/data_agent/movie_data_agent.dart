@@ -4,4 +4,6 @@ abstract class MovieDataAgent{
   Future<List<MovieVO>?>getNowPlaying(int page);
 
   Future<int?>getTotalPage(int page);
+
+  Future<List<MovieVO>?> getPopularMovie(int page);
 }
