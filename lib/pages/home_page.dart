@@ -5,7 +5,6 @@ import 'package:movie_db/constant/api_constant.dart';
 import 'package:movie_db/data/apply/movei_db_apply_impl.dart';
 import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 
 import '../constant/color.dart';

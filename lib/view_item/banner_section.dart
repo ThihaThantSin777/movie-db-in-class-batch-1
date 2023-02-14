@@ -52,7 +52,9 @@ class _BannerSectionState extends State<BannerSection> {
             children: [
               BannerItemsView(listBanner: bannerList ?? [],controller: _pageController,),
               const SizedBox(height: dMp3x,),
-              PageIndicator(controller: _pageController,bannerList: bannerList ?? [],),
+              PageIndicator(controller: _pageController,bannerList: bannerList ?? [],onDotClicked: (index){
+                _pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+              },),
             ],
           );
         },
@@ -64,20 +66,19 @@ class _BannerSectionState extends State<BannerSection> {
 class PageIndicator extends StatelessWidget {
   const PageIndicator({
     Key? key,
-    required this.controller, required this.bannerList,
+    required this.controller, required this.bannerList, required this.onDotClicked,
   }) : super(key: key);
 
   final PageController controller;
   final List bannerList;
+  final Function(int index) onDotClicked;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: dMp10x,
       child: SmoothPageIndicator(
-        onDotClicked: (index) {
-          controller.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
-        },
+        onDotClicked: (index) => onDotClicked(index),
       controller: controller,
       count:  bannerList.length,
       axisDirection: Axis.horizontal,
