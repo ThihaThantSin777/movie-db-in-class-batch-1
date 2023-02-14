@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const cSecondary = Color.fromRGBO(87, 82, 81, 1);
-const cPrimary = Colors.black;
+const cSecondary = Color.fromRGBO(30, 31, 48, 1);
+const cPrimary =  Color.fromRGBO(32, 25, 40, 1.0);
 const cWhite = Colors.white;
 const cGrey = Colors.grey;
 const cAmber = Colors.amber;

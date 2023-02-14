@@ -7,11 +7,13 @@ import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+
 import '../constant/color.dart';
 import '../constant/dimen.dart';
+import '../view_item/banner_section.dart';
 import '../view_item/location_section.dart';
 import '../view_item/show_case_section.dart';
-import '../widgets/easy_text_widget.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: cPrimary,
       appBar: AppBar(
         actions: const [
           Icon(
@@ -83,7 +85,7 @@ class _HomePageState extends State<HomePage> {
           color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Colors.black,
+        backgroundColor: cSecondary,
         title: const Text(
           'Discover',
           style: TextStyle(color: Colors.white),
@@ -95,27 +97,9 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ///Banner Section
-            SizedBox(
-              height: 250,
-              child: FutureBuilder<List<MovieVO>?>(
-                  future: movieDBApply.getNowPlayingMovies(1),
-                  builder: (context, snapShot) {
-                    if (snapShot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapShot.hasError) {
-                      return const Center(
-                        child: Text('Error Occur'),
-                      );
-                    }
-                    final listMovieBanner = snapShot.data?.take(5).toList();
-                    return BannerMovieItemView(
-                        controller: _pageController,
-                        movieList: listMovieBanner ?? []);
-                  }),
-            ),
+            const BannerSection(),
+
+            const SizedBox(height: dMp20x,),
 
             ///Best Popular Movies And Serial Section
             SizedBox(
