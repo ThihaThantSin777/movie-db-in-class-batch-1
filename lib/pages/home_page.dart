@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> {
           children: [
             ///Banner Section
             const BannerSection(),
-
             const SizedBox(height: dMp20x,),
 
             ///Best Popular Movies And Serial Section
@@ -262,105 +261,4 @@ class BestPopularMoviesImageView extends StatelessWidget {
   }
 }
 
-class BannerMovieItemView extends StatelessWidget {
-  const BannerMovieItemView(
-      {Key? key, required this.movieList, required this.controller})
-      : super(key: key);
-  final List<MovieVO> movieList;
-  final PageController controller;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 200,
-          child: PageView.builder(
-              controller: controller,
-              itemCount: movieList.length,
-              itemBuilder: (context, index) => BannerView(
-                    title: movieList[index].originalTitle ?? '',
-                    image: movieList[index].backdropPath ?? '',
-                  )),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            onDotClicked: (index) {
-              controller.animateToPage(index,
-                  duration: const Duration(seconds: 1), curve: Curves.easeIn);
-            },
-            controller: controller,
-            count: movieList.length,
-            axisDirection: Axis.horizontal,
-            effect: const SlideEffect(
-                spacing: 8.0,
-                radius: 30,
-                dotWidth: 15.0,
-                dotHeight: 15.0,
-                strokeWidth: 1.5,
-                dotColor: Colors.grey,
-                activeDotColor: Colors.amber),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class BannerView extends StatelessWidget {
-  const BannerView({
-    Key? key,
-    required this.image,
-    required this.title,
-  }) : super(key: key);
-  final String image;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-            child: CachedNetworkImage(
-          imageUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
-          fit: BoxFit.cover,
-          placeholder: (context, string) => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        )),
-        Positioned.fill(
-            child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.transparent, Colors.black],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter)),
-        )),
-        const Positioned.fill(
-            child: Icon(
-          Icons.play_circle,
-          color: Colors.amber,
-          size: 40,
-        )),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-}
