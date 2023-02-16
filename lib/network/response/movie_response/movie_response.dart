@@ -1,8 +1,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
+import 'package:movie_db/data/vos/movie_vo/movie_vo/movie_vo.dart';
 
-import 'dates_vo.dart';
+import '../../../data/vos/date_vo/dates_vo.dart';
 
 part 'movie_response.g.dart';
 @JsonSerializable()

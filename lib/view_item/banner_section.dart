@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:movie_db/constant/color.dart';
 import 'package:movie_db/constant/dimen.dart';
+import 'package:movie_db/utils/navigate_screen.dart';
 import 'package:movie_db/widgets/easy_cached_network_image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../constant/api_constant.dart';
 import '../data/apply/movei_db_apply_impl.dart';
 import '../data/apply/movie_db_apply.dart';
-import '../data/vos/movie_vo/movie_vo.dart';
+import '../data/vos/movie_vo/movie_vo/movie_vo.dart';
+import '../pages/detail_page.dart';
+import '../widgets/gradient_container.dart';
 
 
 class BannerSection extends StatefulWidget {
@@ -109,7 +112,11 @@ class BannerItemsView extends StatelessWidget {
         controller: controller,
         itemCount: listBanner.length,
         itemBuilder: (context, index) {
-          return BannerItem(movieVo: listBanner[index],);
+          return GestureDetector(
+            onTap: (){
+              navigateToNextScreen(context,DetailPage(movieId: listBanner[index].id ?? 0,));
+            },
+              child: BannerItem(movieVo: listBanner[index],));
       },));
   }
 }
@@ -129,14 +136,7 @@ class BannerItem extends StatelessWidget {
             child: EasyCachedImage(
              imgUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
             )),
-        Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Colors.transparent, cPrimary],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
-            )),
+        const GradientContainerWidget(),
         const Positioned.fill(
             child: Icon(
               Icons.play_circle,
@@ -144,13 +144,13 @@ class BannerItem extends StatelessWidget {
               size: dFs40x,
             )),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: dMp10x, vertical: dMp10x),
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Text(
               title,
               style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: dFs20x,
                   fontWeight: FontWeight.w600,
                   color: Colors.white),
             ),
@@ -160,3 +160,4 @@ class BannerItem extends StatelessWidget {
     );
   }
 }
+
