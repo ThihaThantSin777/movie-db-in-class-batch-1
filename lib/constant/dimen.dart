@@ -10,8 +10,10 @@ const double dMp20x = 20;
 // width and height
 const double dWh12x = 12;
 const double dWh10x = 10;
+const double dWh50x = 50;
 const double dW20x = 20;
 const double dWh140x = 140;
+const double dWh160x = 160;
 const double dWh170x = 170;
 const double dWh180x = 190;
 const double dWh270x = 270;

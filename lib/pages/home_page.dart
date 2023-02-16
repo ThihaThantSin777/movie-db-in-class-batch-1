@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget {
 
             ///Best Popular Movies And Serial Section
             const BestPopularMovieSection(),
-
+            const SizedBox(height: dMp10x,),
             //Location Section
             const LocationSection(),
 

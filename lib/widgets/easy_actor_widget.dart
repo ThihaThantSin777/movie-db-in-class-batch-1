@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:movie_db/constant/api_constant.dart';
-import 'package:movie_db/data/vos/actor_vo/actor_vo.dart';
 
 import '../constant/color.dart';
 import '../constant/dimen.dart';
-import '../data/vos/know_for_vo/know_for_vo.dart';
 import 'easy_cached_network_image.dart';
 import 'easy_text_widget.dart';
 
@@ -48,11 +46,12 @@ class ListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: dWh220x,
+      width: dWh160x,
+      height: dWh200x,
       margin: const EdgeInsets.only(left: dMp10x,right: dMp5x),
       child: Stack(
         children: [
-          EasyCachedImage(imgUrl: image.isEmpty?kDefaultImage:"$kPrefixImageLink$image", height: dWh220x, width: dWh140x),
+          EasyCachedImage(imgUrl: image.isEmpty?kDefaultImage:"$kPrefixImageLink$image", height: dWh220x, width: dWh160x),
           Positioned(
             bottom: dMp10x,
             left: dMp5x,
@@ -60,11 +59,11 @@ class ListViewItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children:  [
-                EasyTextWidget(data: name,fontSize: dFs16x,),
+                EasyTextWidget(data: name,fontSize: dFs14x,),
                 Row(
                   children:  [
-                    const Icon(CupertinoIcons.hand_thumbsup_fill,color: cAmber,size: dFs16x,),
-                    EasyTextWidget(data: "$like m Liked ",fontSize: dFs16x,color: cAmber,),
+                    const Icon(CupertinoIcons.hand_thumbsup_fill,color: cAmber,size: dFs14x,),
+                    EasyTextWidget(data: "$like m Liked ",fontSize: dFs14x,color: cAmber,),
                   ],
                 )
               ],

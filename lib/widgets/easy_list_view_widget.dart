@@ -113,15 +113,14 @@ class SecondStyle extends StatelessWidget {
         padding: const EdgeInsets.only(left: dMp10x),
         width: dWh170x,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             EasyCachedImage(
               imgUrl:
-                  (imgUrl.isEmpty) ? kDefaultImage : "$kPrefixImageLink$imgUrl",width: dWh140x,height: dWh200x,
+                  (imgUrl.isEmpty) ? kDefaultImage : "$kPrefixImageLink$imgUrl",width: dWh140x,height: dWh180x,
             ),
             Expanded(
-              flex: 1,
               child: EasyTextWidget(
                 data: title,
               ),
