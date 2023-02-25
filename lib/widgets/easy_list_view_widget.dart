@@ -120,13 +120,12 @@ class SecondStyle extends StatelessWidget {
               imgUrl:
                   (imgUrl.isEmpty) ? kDefaultImage : "$kPrefixImageLink$imgUrl",width: dWh140x,height: dWh180x,
             ),
-            Expanded(
+            Flexible(
               child: EasyTextWidget(
                 data: title,
               ),
             ),
-            Expanded(
-              flex: 1,
+            Flexible(
               child: Row(
                 children: [
                   EasyTextWidget(data: itemCount.toString()),

@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -274,21 +273,24 @@ class DetailBody extends StatelessWidget {
             StoryLine(overView: overView),
 
             // Play and Rate Button
-            Row(
-              children: const [
-                EasyButtonWidgets(
-                  data: 'PLAY TRAILER',
-                  icon: Icons.play_circle_outline_outlined,
-                  checked: true,
-                ),
-                SizedBox(
-                  width: dMp5x,
-                ),
-                EasyButtonWidgets(
-                  icon: Icons.star,
-                  data: 'RATE MOVIE',
-                )
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: dMp10x),
+              child: Row(
+                children: const [
+                  EasyButtonWidgets(
+                    data: 'PLAY TRAILER',
+                    icon: Icons.play_circle_outline_outlined,
+                    checked: true,
+                  ),
+                  SizedBox(
+                    width: dMp5x,
+                  ),
+                  EasyButtonWidgets(
+                    icon: Icons.star,
+                    data: 'RATE MOVIE',
+                  )
+                ],
+              ),
             ),
 
             // Cast Section

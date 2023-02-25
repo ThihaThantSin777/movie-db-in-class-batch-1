@@ -64,7 +64,7 @@ class _ActorSectionState extends State<ActorSection> {
         children: [
           const EasyMoreItem(leftText: "Actors",rightText: "More Actors",),
           const SizedBox(height: dMp10x,),
-          EasyActorWidget(knowForActor: knowForActor,controller: _scrollController,)
+          knowForActor.isEmpty?const Center(child: CircularProgressIndicator()):EasyActorWidget(knowForActor: knowForActor,controller: _scrollController,)
         ],
       ),
     );

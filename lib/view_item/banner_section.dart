@@ -25,10 +25,16 @@ class BannerSection extends StatefulWidget {
 class _BannerSectionState extends State<BannerSection> {
   final PageController _pageController = PageController();
   final MovieDBApply _movieApply = MovieDBApplyImpl();
+  List<MovieVO> moviesList = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _movieApply.getAllMoviesFromDatabaseStream(1).listen((value) {
+      setState(() {
+        moviesList = value ?? [];
+      });
+    });
   }
 
   @override
@@ -38,29 +44,17 @@ class _BannerSectionState extends State<BannerSection> {
   }
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return moviesList.isEmpty? const Center(child: CircularProgressIndicator()):SizedBox(
       height: dWh220x,
-      child: FutureBuilder<List<MovieVO>?>(
-        future: _movieApply.getNowPlayingMovies(1),
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return const Center(child: CircularProgressIndicator(),);
-          }
-          if(snapshot.hasError){
-            return const Center(child: CircularProgressIndicator());
-          }
-          final bannerList = snapshot.data?.take(5).toList();
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BannerItemsView(listBanner: bannerList ?? [],controller: _pageController,),
-              const SizedBox(height: dMp3x,),
-              PageIndicator(controller: _pageController,bannerList: bannerList ?? [],onDotClicked: (index){
-                _pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
-              },),
-            ],
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BannerItemsView(listBanner: moviesList.take(5).toList(),controller: _pageController,),
+          const SizedBox(height: dMp3x,),
+          PageIndicator(controller: _pageController,bannerList: moviesList.take(5).toList(),onDotClicked: (index){
+            _pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+          },),
+        ],
       ),
     );
   }
@@ -81,7 +75,7 @@ class PageIndicator extends StatelessWidget {
     return SizedBox(
       height: dMp10x,
       child: SmoothPageIndicator(
-        onDotClicked: (index) => onDotClicked(index),
+      onDotClicked: (index) => onDotClicked(index),
       controller: controller,
       count:  bannerList.length,
       axisDirection: Axis.horizontal,
@@ -130,7 +124,7 @@ class BannerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = movieVo.backdropPath ?? "";
     final title = movieVo.title ?? "";
-    return Stack(
+    return image.isEmpty?const Center(child: CircularProgressIndicator()):Stack(
       children: [
         Positioned.fill(
             child: EasyCachedImage(

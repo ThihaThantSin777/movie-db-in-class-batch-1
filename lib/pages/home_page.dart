@@ -57,7 +57,6 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: dMp10x,),
             //Location Section
             const LocationSection(),
-
             // Tab Section
             const TabSection(),
             const SizedBox(height: dMp20x,),

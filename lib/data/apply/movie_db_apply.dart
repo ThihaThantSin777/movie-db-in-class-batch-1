@@ -31,4 +31,11 @@ abstract class MovieDBApply{
   Future<List<MovieVO>?> getSimilarMovie(int page,int movieId);
   /// For DataBase
 
+  void save(List<MovieVO> movieList);
+
+  List<MovieVO>? getAllMoviesFromDatabase();
+
+  Stream<List<MovieVO>?> getAllMoviesFromDatabaseStream(int page);
+
+  Stream<List<MovieVO>?> getAllGenreMovieFromDatabaseSteam(int genre,int page);
 }

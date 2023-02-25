@@ -67,7 +67,7 @@ class _TabSectionState extends State<TabSection> {
         children: [
           TabBarItems(genreList: genreList ,
             onTap: (index){
-              genre = genreList[index].id ?? 1;
+              genre = genreList[index].id ?? 12;
               movieApply.getGenreMovie(genre, page).then((value) {
                 setState(() {
                   genreByMovieList = value ?? [];
@@ -118,7 +118,7 @@ class TabBarItems extends StatelessWidget {
       indicatorColor: cAmber,
       indicatorPadding: const EdgeInsets.symmetric(horizontal: dMp10x),
       onTap: (index)=> onTap(index),
-      tabs: genreList.map((e) => Tab(text: e.name ?? "" ,
-    )).toList(),);
+      tabs: genreList.map((e) => Tab(text: e.name ?? "" )).toList(),
+    );
   }
 }

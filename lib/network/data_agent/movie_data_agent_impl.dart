@@ -36,7 +36,10 @@ class MovieDataAgentImpl extends MovieDataAgent {
       .first;
 
   @override
-  Future<List<MovieVO>?> getPopularMovie(int page) => _api.getPopularMovie(kApiKey, page).asStream().map((event) => event.results).first;
+  Future<List<MovieVO>?> getPopularMovie(int page) =>
+      _api.getPopularMovie(kApiKey, page)
+          .asStream().map((event) => event.results)
+          .first;
 
   @override
   Future<List<GenreVO>?> getGenre() =>

@@ -22,10 +22,17 @@ class _BestPopularMovieSectionState extends State<BestPopularMovieSection> {
   @override
   void initState() {
     super.initState();
-    _movieApply.getPopularMovie(page).then((value) {
-      setState(() {
-        movieList = value;
-      });
+    // _movieApply.getPopularMovie(page).then((value) {
+    //   setState(() {
+    //     movieList = value;
+    //   });
+    // });
+    _movieApply.getAllMoviesFromDatabaseStream(page).listen((event) {
+      if(mounted){
+        setState(() {
+          movieList = event;
+        });
+      }
     });
     _scrollController.addListener(() {
       if (_scrollController.position.atEdge) {
