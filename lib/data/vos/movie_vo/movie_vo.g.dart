@@ -24,6 +24,8 @@ MovieVO _$MovieVOFromJson(Map<String, dynamic> json) => MovieVO(
       isGetNowPlaying: json['isGetNowPlaying'] as bool? ?? false,
       isPopularMovies: json['isPopularMovies'] as bool? ?? false,
       isTopRated: json['isTopRated'] as bool? ?? false,
+      isGenresMovies: json['isGenresMovies'] as bool? ?? false,
+      isSimilar: json['isSimilar'] as bool?,
     );
 
 Map<String, dynamic> _$MovieVOToJson(MovieVO instance) => <String, dynamic>{
@@ -44,4 +46,6 @@ Map<String, dynamic> _$MovieVOToJson(MovieVO instance) => <String, dynamic>{
       'isGetNowPlaying': instance.isGetNowPlaying,
       'isPopularMovies': instance.isPopularMovies,
       'isTopRated': instance.isTopRated,
+      'isGenresMovies': instance.isGenresMovies,
+      'isSimilar': instance.isSimilar,
     };

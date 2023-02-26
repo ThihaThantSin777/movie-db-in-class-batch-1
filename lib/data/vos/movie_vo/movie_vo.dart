@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'movie_vo.g.dart';
@@ -39,6 +41,12 @@ class MovieVO {
 
   bool? isTopRated;
 
+  bool? isGenresMovies;
+
+  bool? isSimilar;
+
+  //bool? isGenres
+
   MovieVO(
       this.adult,
       this.backdropPath,
@@ -56,7 +64,10 @@ class MovieVO {
       this.voteCount,
       {this.isGetNowPlaying = false,
       this.isPopularMovies = false,
-      this.isTopRated = false});
+      this.isTopRated = false,
+      this.isGenresMovies = false,
+        this.isSimilar
+      });
 
   factory MovieVO.fromJson(Map<String, dynamic> json) =>
       _$MovieVOFromJson(json);

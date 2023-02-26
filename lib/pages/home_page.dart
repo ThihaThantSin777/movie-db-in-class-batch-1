@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:movie_db/constant/api_constant.dart';
-import 'package:movie_db/data/apply/movei_db_apply_impl.dart';
+import 'package:movie_db/data/apply/movie_db_apply_impl.dart';
 import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../constant/dimens.dart';
+import '../view_items/actors_view_item.dart';
+import '../view_items/banner_movie_view_item.dart';
 import '../view_items/location_section_view_item.dart';
 import '../view_items/show_case_movie_view_item.dart';
+import '../widgets/rates_and_rating_bar_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,7 +22,9 @@ class _HomePageState extends State<HomePage> {
   final MovieDBApply movieDBApply = MovieDBApplyImpl();
   final PageController _pageController = PageController();
   final ScrollController _scrollController = ScrollController();
+
   List<MovieVO> bestPopularMoviesList = [];
+
   int page = 1;
 
   @override
@@ -39,14 +41,12 @@ class _HomePageState extends State<HomePage> {
         if (pixel != 0) {
           page++;
           movieDBApply.getNowPlayingMovies(page).then((value) {
-            if(value?.isNotEmpty??false){
-              final temp=value;
+            if (value?.isNotEmpty ?? false) {
+              final temp = value;
               temp?.forEach((element) {
                 bestPopularMoviesList.add(element);
               });
-              setState(() {
-
-              });
+              setState(() {});
             }
           });
         }
@@ -65,7 +65,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
+
+      appBar:  AppBar(
         actions: const [
           Icon(
             Icons.search,
@@ -87,6 +88,7 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -118,27 +120,30 @@ class _HomePageState extends State<HomePage> {
             ///Best Popular Movies And Serial Section
             SizedBox(
                 height: 300,
-                child: (bestPopularMoviesList.isEmpty)?const Center(child: CircularProgressIndicator(),): Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '  Best Popular Movies And Serial'.toUpperCase(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                        child: BestPopularMoviesAndSerialItemView(
-                            controller: _scrollController,
-                            listBestPopularMovies: bestPopularMoviesList))
-                  ],
-                )
-            ),
+                child: (bestPopularMoviesList.isEmpty)
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '  Best Popular Movies And Serial'.toUpperCase(),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Expanded(
+                              child: BestPopularMoviesAndSerialItemView(
+                                  controller: _scrollController,
+                                  listBestPopularMovies: bestPopularMoviesList))
+                        ],
+                      )),
 
             ///Location Section
             const SizedBox(
@@ -146,11 +151,14 @@ class _HomePageState extends State<HomePage> {
               child: LocationSectionItemView(),
             ),
 
+            /// Genres Movies
+
             const SizedBox(
               height: kSP15x,
             ),
 
             ///Show Case Section
+
             FutureBuilder<List<MovieVO>?>(
                 future: movieDBApply.getPopularMovies(1),
                 builder: (context, snapShot) {
@@ -165,10 +173,19 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                   final listShowCaseMovie = snapShot.data?.toList();
-                  return ShowCaseMovieItemView(listShowCaseMovie: listShowCaseMovie);
-                }
+                  return ShowCaseMovieItemView(
+                      listShowCaseMovie: listShowCaseMovie);
+                }),
+
+            /// Actors
+            const SizedBox(
+              height: kSP20x,
             ),
 
+           const SizedBox(
+              height: 300,
+              child:  ActorsItemView(),
+            ),
           ],
         ),
       ),
@@ -191,7 +208,7 @@ class BestPopularMoviesAndSerialItemView extends StatelessWidget {
     return ListView.builder(
       controller: controller,
       scrollDirection: Axis.horizontal,
-      itemCount: listBestPopularMovies?.length ?? 0,
+      itemCount: listBestPopularMovies.length,
       itemBuilder: (context, index) {
         return Container(
             margin: const EdgeInsets.only(right: 10, left: 10),
@@ -223,42 +240,7 @@ class BestPopularMoviesView extends StatelessWidget {
         const SizedBox(
           height: 5,
         ),
-        BestPopularMoviesRateAndRatingBarView(rate: movie.voteAverage ?? 0.0)
-      ],
-    );
-  }
-}
-
-class BestPopularMoviesRateAndRatingBarView extends StatelessWidget {
-  const BestPopularMoviesRateAndRatingBarView({Key? key, required this.rate})
-      : super(key: key);
-  final num rate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          rate.toString(),
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
-        RatingBar.builder(
-          itemSize: 15,
-          initialRating: rate.toDouble(),
-          minRating: 1,
-          direction: Axis.horizontal,
-          allowHalfRating: true,
-          itemCount: 5,
-          itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-          itemBuilder: (context, _) => const Icon(
-            Icons.star,
-            color: Colors.amber,
-          ),
-          onRatingUpdate: (rating) {
-            //print(rating);
-          },
-        )
+        RatesAndRatingBarWidget(rate: movie.voteAverage ?? 0.0)
       ],
     );
   }
@@ -297,105 +279,4 @@ class BestPopularMoviesImageView extends StatelessWidget {
   }
 }
 
-class BannerMovieItemView extends StatelessWidget {
-  const BannerMovieItemView(
-      {Key? key, required this.movieList, required this.controller})
-      : super(key: key);
-  final List<MovieVO> movieList;
-  final PageController controller;
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 200,
-          child: PageView.builder(
-              controller: controller,
-              itemCount: movieList.length,
-              itemBuilder: (context, index) => BannerView(
-                    title: movieList[index].originalTitle ?? '',
-                    image: movieList[index].backdropPath ?? '',
-                  )),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            onDotClicked: (index) {
-              controller.animateToPage(index,
-                  duration: const Duration(seconds: 1), curve: Curves.easeIn);
-            },
-            controller: controller,
-            count: movieList.length,
-            axisDirection: Axis.horizontal,
-            effect: const SlideEffect(
-                spacing: 8.0,
-                radius: 30,
-                dotWidth: 15.0,
-                dotHeight: 15.0,
-                strokeWidth: 1.5,
-                dotColor: Colors.grey,
-                activeDotColor: Colors.amber),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class BannerView extends StatelessWidget {
-  const BannerView({
-    Key? key,
-    required this.image,
-    required this.title,
-  }) : super(key: key);
-  final String image;
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-            child: CachedNetworkImage(
-          imageUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
-          fit: BoxFit.cover,
-          placeholder: (context, string) => const Center(
-            child: CircularProgressIndicator(),
-          ),
-        )),
-        Positioned.fill(
-            child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.transparent, Colors.black],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter)),
-        )),
-        const Positioned.fill(
-            child: Icon(
-          Icons.play_circle,
-          color: Colors.amber,
-          size: 40,
-        )),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-}

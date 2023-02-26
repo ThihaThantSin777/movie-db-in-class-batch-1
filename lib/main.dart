@@ -1,10 +1,20 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_db/data/apply/movei_db_apply_impl.dart';
-import 'package:movie_db/data/apply/movie_db_apply.dart';
+import 'package:movie_db/constant/api_constant.dart';
+import 'package:movie_db/network/api/movie_api.dart';
 import 'package:movie_db/pages/home_page.dart';
 
 void main() {
   runApp(const MyApp());
+  //MovieDBApply movieDBApply = MovieDBApplyImpl();
+  // movieDBApply.getDetails(c).then((value) {
+  //   print(value);
+  // }).catchError((e)=>print('error================>$e'));
+  
+  MovieAPI movieAPI = MovieAPI(Dio());
+  movieAPI.getDetails(kApiKey, 505642).then((value){
+    print('value==========>$value');
+  }).catchError((e)=>print('====================>$e'));
 
 }
 
