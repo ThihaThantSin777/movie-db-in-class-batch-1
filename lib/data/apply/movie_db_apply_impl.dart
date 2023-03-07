@@ -47,6 +47,7 @@ class MovieDBApplyImpl extends MovieDBApply {
         return temp;
       });
 
+
   @override
   Future<List<GenreVO>?> getGenre() => _movieDataAgent.getGenre();
 
@@ -67,7 +68,11 @@ class MovieDBApplyImpl extends MovieDBApply {
 
   @override
   Future<DetailResponse?> getDetails(int movieId) =>
-     _movieDataAgent.getDetails(movieId).then((value) => value);
+     _movieDataAgent.getDetails(movieId).then((value) {
+       if(value!= null){
+       _movieDAO.saveDetail(value);
+       }
+       return value;});
 
 
   @override
@@ -106,6 +111,15 @@ class MovieDBApplyImpl extends MovieDBApply {
   @override
   Stream<List<MovieVO>?> getAllGenreMovieFromDatabaseSteam(int genre, int page) {
     getGenreMovie(genre, page);
-    return _movieDAO.watchBox().startWith(_movieDAO.getAllMoviesFromDatabaseStream()).map((event) => _movieDAO.getAllMoviesFromDatabase());
+    return _movieDAO.watchBox()
+        .startWith(_movieDAO.getAllMoviesFromDatabaseStream()).
+    map((event) => _movieDAO.getAllMoviesFromDatabase());
   }
+
+  @override
+  Stream<DetailResponse?> getSingleMovieFromDatabaseStream(int movieId) {
+    getDetails(movieId);
+    return _movieDAO.watchBox().startWith(_movieDAO.getSingleMovieFromDatabaseStream(movieId)).map((event) => _movieDAO.getSingleMovie(movieId));
+  }
+
 }

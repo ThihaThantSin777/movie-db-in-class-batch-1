@@ -5,7 +5,6 @@ import '../vos/actor_vo/actor_vo.dart';
 import '../vos/credit_vo/cast_vo.dart';
 import '../vos/credit_vo/crew_vo.dart';
 import '../vos/genre_vo/genre_vo.dart';
-import '../vos/know_for_vo/know_for_vo.dart';
 
 abstract class MovieDBApply{
 
@@ -36,6 +35,8 @@ abstract class MovieDBApply{
   List<MovieVO>? getAllMoviesFromDatabase();
 
   Stream<List<MovieVO>?> getAllMoviesFromDatabaseStream(int page);
+
+  Stream<DetailResponse?> getSingleMovieFromDatabaseStream(int movieId);
 
   Stream<List<MovieVO>?> getAllGenreMovieFromDatabaseSteam(int genre,int page);
 }

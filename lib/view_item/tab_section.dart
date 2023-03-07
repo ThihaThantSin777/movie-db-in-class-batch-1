@@ -1,64 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:movie_db/data/apply/movie_db_apply.dart';
+import 'package:movie_db/bloc/home_page_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../constant/color.dart';
 import '../constant/dimen.dart';
-import '../data/apply/movei_db_apply_impl.dart';
 import '../data/vos/genre_vo/genre_vo.dart';
 import '../data/vos/movie_vo/movie_vo/movie_vo.dart';
 import '../widgets/easy_list_view_widget.dart';
 
-class TabSection extends StatefulWidget {
-  const TabSection({Key? key}) : super(key: key);
+class TabSection extends StatelessWidget {
+  const TabSection({Key? key, required this.genreList, required this.genreByMovieList}) : super(key: key);
 
-  @override
-  State<TabSection> createState() => _TabSectionState();
-}
+  final List<GenreVO> genreList;
+  final List<MovieVO> genreByMovieList;
 
-class _TabSectionState extends State<TabSection> {
-  final MovieDBApply movieApply = MovieDBApplyImpl();
-  ScrollController controller = ScrollController();
-  List<GenreVO> genreList = [];
-  List<MovieVO> genreByMovieList =[];
-  int genre = 28;
-  int page = 1;
-  @override
-  void initState() {
-    super.initState();
-    movieApply.getGenre().then((value) {
-      setState(() {
-        genreList = value ?? [];
-      });
-    });
-    movieApply.getGenreMovie(genre, page).then((value){
-      setState(() {
-        genreByMovieList = value ?? [];
-      });
-    });
-    controller.addListener(() {
-      if (controller.position.atEdge) {
-        double pixel = controller.position.pixels;
-        if (pixel != 0) {
-          page++;
-          movieApply.getPopularMovie(page).then((value) {
-            if(value?.isNotEmpty??false){
-              final temp=value;
-              temp?.forEach((element) {
-                genreByMovieList.add(element);
-              });
-              setState(() {
-              });
-            }
-          });
-        }
-      }
-    }
-    );}
-  @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(length: genreList.length , child: SizedBox(
@@ -66,21 +21,16 @@ class _TabSectionState extends State<TabSection> {
       child: genreList.isEmpty?const Center(child: CircularProgressIndicator(),):Column(
         children: [
           TabBarItems(genreList: genreList ,
-            onTap: (index){
-              genre = genreList[index].id ?? 12;
-              movieApply.getGenreMovie(genre, page).then((value) {
-                setState(() {
-                  genreByMovieList = value ?? [];
-                });
-              });
-            },
+            onTap: (index)=> context.read<HomePageBloc>().changeTab(index),
           ),
-          Expanded(child: TabBarItemView(genreMovies: genreByMovieList,controller: controller,))
+          Expanded(child: TabBarItemView(genreMovies: genreByMovieList,controller: context.read<HomePageBloc>().getScrollController2,))
         ],
       ),
     ));
   }
 }
+
+
 
 class TabBarItemView extends StatelessWidget {
   const TabBarItemView({

@@ -1,27 +1,31 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_db/bloc/detail_page_bloc.dart';
 import 'package:movie_db/constant/api_constant.dart';
 import 'package:movie_db/data/apply/movie_db_apply.dart';
 import 'package:movie_db/data/vos/credit_vo/crew_vo.dart';
 import 'package:movie_db/utils/string_extension.dart';
+import 'package:provider/provider.dart';
 
 import '../constant/color.dart';
 import '../constant/dimen.dart';
-import '../data/apply/movei_db_apply_impl.dart';
+import '../data/apply/movie_db_apply_impl.dart';
 import '../data/vos/credit_vo/cast_vo.dart';
 import '../data/vos/detail_vos/production_country_vo.dart';
 import '../data/vos/genre_vo/genre_vo.dart';
 import '../data/vos/movie_vo/movie_vo/movie_vo.dart';
 import '../network/response/detail_response/detail_response.dart';
 import '../view_item/about_flim_section.dart';
-import '../widgets/easy_actor_widget.dart';
+import '../view_item/cast_detail_section.dart';
+import '../view_item/crew_detail_section.dart';
+import '../view_item/detail_title.dart';
+import '../view_item/storyline_detail_section.dart';
 import '../widgets/easy_button_widget.dart';
 import '../widgets/easy_cached_network_image.dart';
 import '../widgets/easy_list_view_widget.dart';
 import '../widgets/easy_more_item.dart';
 import '../widgets/easy_text_widget.dart';
-import '../widgets/rating_widget.dart';
 import '../widgets/rounded_container.dart';
 
 class DetailPage extends StatefulWidget {
@@ -36,7 +40,6 @@ class _DetailPageState extends State<DetailPage> {
   final ScrollController _controller = ScrollController();
   final ScrollController _controller1 = ScrollController();
   final MovieDBApply _movieDBApply = MovieDBApplyImpl();
-  DetailResponse? movieDetails;
   List<CastVO>? getCast;
   List<CrewVO>? getCrew;
   List<MovieVO>? getSimilarMovie;
@@ -44,22 +47,7 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     super.initState();
-    _movieDBApply.getDetails(widget.movieId).then((value) {
-      setState(() {
-        movieDetails = value;
-      });
-    });
 
-    _movieDBApply.getCast(widget.movieId).then((value) {
-      setState(() {
-        getCast = value;
-      });
-    });
-    _movieDBApply.getCrew(widget.movieId).then((value) {
-      setState(() {
-        getCrew = value;
-      });
-    });
     _movieDBApply
         .getSimilarMovie(page, widget.movieId)
         .then((value) => getSimilarMovie = value);
@@ -91,30 +79,38 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: cPrimary,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          SliverAppBarItem(
-            imgUrl: movieDetails?.backdropPath ?? '',
-            name: movieDetails?.originalTitle ?? "",
-            rating: movieDetails?.voteAverage ?? 1,
-            voteCount: movieDetails?.voteCount ?? 1,
-            date: movieDetails?.releaseDate ?? '',
-          )
-        ],
-        body: DetailBody(
-          date: movieDetails?.releaseDate ?? "",
-          time: movieDetails?.runtime ?? 60,
-          listGenre: movieDetails?.genres ?? [],
-          overView: movieDetails?.overview ?? "",
-          name: movieDetails?.originalTitle ?? "",
-          country: movieDetails?.productionCountries ?? [],
-          controller: _controller,
-          cast: getCast ?? [],
-          crew: getCrew ?? [],
-          similarMovie: getSimilarMovie ?? [], controller1: _controller1,
-          runtime: movieDetails?.runtime?? 1,
+    return ChangeNotifierProvider<DetailBloc>(
+      create: (context)=> DetailBloc(widget.movieId),
+      child: Scaffold(
+        backgroundColor: cPrimary,
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            Selector<DetailBloc,DetailResponse?>(
+              selector: (context,selector)=> selector.getDetailResponse,
+              builder: (context,movieDetails,child)=> SliverAppBarItem(
+                imgUrl: movieDetails?.backdropPath ?? '',
+                name: movieDetails?.originalTitle ?? "",
+                rating: movieDetails?.voteAverage ?? 1,
+                voteCount: movieDetails?.voteCount ?? 1,
+                date: movieDetails?.releaseDate ?? '',
+              ),
+            )
+          ],
+          body: Consumer<DetailBloc>(
+            builder: (context, value, child) =>  DetailBody(
+              date: value.getDetailResponse?.releaseDate ?? "",
+              time: value.getDetailResponse?.runtime ?? 60,
+              listGenre: value.getDetailResponse?.genres ?? [],
+              overView: value.getDetailResponse?.overview ?? "",
+              name: value.getDetailResponse?.originalTitle ?? "",
+              country: value.getDetailResponse?.productionCountries ?? [],
+              controller: _controller,
+              cast: value.getCast,
+              crew: value.getCrew,
+              similarMovie: getSimilarMovie ?? [], controller1: _controller1,
+              runtime: value.getDetailResponse?.runtime?? 1,
+            ),
+          ),
         ),
       ),
     );
@@ -334,177 +330,9 @@ class DetailBody extends StatelessWidget {
   }
 }
 
-class StoryLine extends StatelessWidget {
-  const StoryLine({
-    Key? key,
-    required this.overView,
-  }) : super(key: key);
-
-  final String overView;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: dMp10x),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const EasyTextWidget(
-            data: 'Story Line',
-            color: cGrey,
-          ),
-          const SizedBox(
-            height: dWh10x,
-          ),
-          EasyTextWidget(
-            data: overView,
-            fontSize: dFs14x,
-          ),
-          const SizedBox(
-            height: dWh10x,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CastSection extends StatelessWidget {
-  const CastSection({
-    Key? key,
-    required this.cast,
-    required this.controller,
-  }) : super(key: key);
-
-  final List<CastVO> cast;
-  final ScrollController controller;
 
 
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: dWh280x,
-      color: cSecondary,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: dMp10x,
-          ),
-          const EasyMoreItem(
-            leftText: 'Actors',
-          ),
-          const SizedBox(
-            height: dMp10x,
-          ),
-          (cast.isEmpty)
-              ? const Center(child: CircularProgressIndicator())
-              : EasyActorWidget(controller: controller, knowForActor: cast),
-        ],
-      ),
-    );
-  }
-}
 
-class CrewSection extends StatelessWidget {
-  const CrewSection({
-    Key? key,
-    required this.crew,
-    required this.controller,
-  }) : super(key: key);
 
-  final List<CrewVO> crew;
-  final ScrollController controller;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: dWh280x,
-      color: cSecondary,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: dMp10x,
-          ),
-          const EasyMoreItem(
-            leftText: 'Creators',
-            rightText: 'More Creators',
-          ),
-          const SizedBox(
-            height: dMp10x,
-          ),
-          (crew.isEmpty)
-              ? const Center(child: CircularProgressIndicator())
-              : EasyActorWidget(controller: controller, knowForActor: crew),
-        ],
-      ),
-    );
-  }
-}
-
-class MovieDetailTitle extends StatelessWidget {
-  const MovieDetailTitle(
-      {Key? key,
-      required this.name,
-      required this.rating,
-      required this.starCount,
-      required this.voteCount,
-      required this.date})
-      : super(key: key);
-  final String name;
-  final num rating;
-  final double starCount;
-  final String voteCount;
-  final String date;
-  @override
-  Widget build(BuildContext context) {
-    final year = date.split('-').first;
-    return Positioned(
-      bottom: dMp0x,
-      left: dMp10x,
-      right: dMp10x,
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                RoundedContainer(data: year),
-                const Spacer(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    RatingStarWidget(
-                      itemCount: starCount,
-                    ),
-                    EasyTextWidget(
-                      data: '$voteCount votes',
-                      fontSize: dFs14x,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    )
-                  ],
-                ),
-                EasyTextWidget(
-                  data: rating.toString(),
-                  fontSize: dFs40x,
-                )
-              ],
-            ),
-            const SizedBox(
-              height: dMp10x,
-            ),
-            EasyTextWidget(
-              data: name,
-              fontSize: dFs25x,
-            ),
-            const SizedBox(
-              height: dMp10x,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -6,8 +6,6 @@ import 'package:movie_db/widgets/easy_cached_network_image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../constant/api_constant.dart';
-import '../data/apply/movei_db_apply_impl.dart';
-import '../data/apply/movie_db_apply.dart';
 import '../data/vos/movie_vo/movie_vo/movie_vo.dart';
 import '../pages/detail_page.dart';
 import '../widgets/gradient_container.dart';
@@ -15,7 +13,9 @@ import '../widgets/gradient_container.dart';
 
 class BannerSection extends StatefulWidget {
   const BannerSection({
-    Key? key,}) :  super(key: key);
+    Key? key, required this.moviesList,}) :  super(key: key);
+  final List<MovieVO> moviesList;
+
 
 
   @override
@@ -24,18 +24,6 @@ class BannerSection extends StatefulWidget {
 
 class _BannerSectionState extends State<BannerSection> {
   final PageController _pageController = PageController();
-  final MovieDBApply _movieApply = MovieDBApplyImpl();
-  List<MovieVO> moviesList = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _movieApply.getAllMoviesFromDatabaseStream(1).listen((value) {
-      setState(() {
-        moviesList = value ?? [];
-      });
-    });
-  }
 
   @override
   void dispose() {
@@ -44,14 +32,14 @@ class _BannerSectionState extends State<BannerSection> {
   }
   @override
   Widget build(BuildContext context) {
-    return moviesList.isEmpty? const Center(child: CircularProgressIndicator()):SizedBox(
+    return widget.moviesList.isEmpty? const Center(child: CircularProgressIndicator()):SizedBox(
       height: dWh220x,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          BannerItemsView(listBanner: moviesList.take(5).toList(),controller: _pageController,),
+          BannerItemsView(listBanner: widget.moviesList.take(5).toList(),controller: _pageController,),
           const SizedBox(height: dMp3x,),
-          PageIndicator(controller: _pageController,bannerList: moviesList.take(5).toList(),onDotClicked: (index){
+          PageIndicator(controller: _pageController,bannerList: widget.moviesList.take(5).toList(),onDotClicked: (index){
             _pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
           },),
         ],
