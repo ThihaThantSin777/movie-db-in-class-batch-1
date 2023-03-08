@@ -24,8 +24,10 @@ class DetailBloc extends ChangeNotifier{
 
     // detail response
     _movieDBApply.getSingleMovieFromDatabaseStream(movieId).listen((value) {
-        _movieDetails = value;
-    notifyListeners();
+       if(value!=null){
+         _movieDetails=value;
+         notifyListeners();
+       }
     });
 
     // cast list

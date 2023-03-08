@@ -10,6 +10,8 @@ abstract class MovieDAO{
 
   DetailResponse? getSingleMovie(int movieId);
 
+  Stream watchDetailsBox();
+
   Stream watchBox();
 
   Stream<List<MovieVO>?> getAllMoviesFromDatabaseStream();

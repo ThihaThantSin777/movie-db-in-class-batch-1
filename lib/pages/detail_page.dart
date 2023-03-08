@@ -87,29 +87,33 @@ class _DetailPageState extends State<DetailPage> {
           headerSliverBuilder: (context, innerBoxIsScrolled) => [
             Selector<DetailBloc,DetailResponse?>(
               selector: (context,selector)=> selector.getDetailResponse,
-              builder: (context,movieDetails,child)=> SliverAppBarItem(
-                imgUrl: movieDetails?.backdropPath ?? '',
-                name: movieDetails?.originalTitle ?? "",
-                rating: movieDetails?.voteAverage ?? 1,
-                voteCount: movieDetails?.voteCount ?? 1,
-                date: movieDetails?.releaseDate ?? '',
-              ),
+              builder: (context,movieDetails,child){
+                return SliverAppBarItem(
+                  imgUrl: movieDetails?.backdropPath ?? '',
+                  name: movieDetails?.originalTitle ?? "",
+                  rating: movieDetails?.voteAverage ?? 1,
+                  voteCount: movieDetails?.voteCount ?? 1,
+                  date: movieDetails?.releaseDate ?? '',
+                );
+              }
             )
           ],
           body: Consumer<DetailBloc>(
-            builder: (context, value, child) =>  DetailBody(
-              date: value.getDetailResponse?.releaseDate ?? "",
-              time: value.getDetailResponse?.runtime ?? 60,
-              listGenre: value.getDetailResponse?.genres ?? [],
-              overView: value.getDetailResponse?.overview ?? "",
-              name: value.getDetailResponse?.originalTitle ?? "",
-              country: value.getDetailResponse?.productionCountries ?? [],
-              controller: _controller,
-              cast: value.getCast,
-              crew: value.getCrew,
-              similarMovie: getSimilarMovie ?? [], controller1: _controller1,
-              runtime: value.getDetailResponse?.runtime?? 1,
-            ),
+            builder: (context, value, child) {
+              return  DetailBody(
+                date: value.getDetailResponse?.releaseDate ?? "",
+                time: value.getDetailResponse?.runtime ?? 60,
+                listGenre: value.getDetailResponse?.genres ?? [],
+                overView: value.getDetailResponse?.overview ?? "",
+                name: value.getDetailResponse?.originalTitle ?? "",
+                country: value.getDetailResponse?.productionCountries ?? [],
+                controller: _controller,
+                cast: value.getCast,
+                crew: value.getCrew,
+                similarMovie: getSimilarMovie ?? [], controller1: _controller1,
+                runtime: value.getDetailResponse?.runtime?? 1,
+              );
+            },
           ),
         ),
       ),

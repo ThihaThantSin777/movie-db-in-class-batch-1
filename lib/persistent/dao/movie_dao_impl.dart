@@ -30,6 +30,9 @@ class MovieDAOImpl extends MovieDAO{
   Stream watchBox()=> _getMovieVOBox().watch();
 
   @override
+  Stream watchDetailsBox()=> _getDetailBox().watch();
+
+  @override
   Stream<DetailResponse?> getSingleMovieFromDatabaseStream(int movieId)=> Stream.value(getSingleMovie(movieId));
 
   @override

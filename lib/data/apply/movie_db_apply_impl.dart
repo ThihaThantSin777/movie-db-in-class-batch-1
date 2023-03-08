@@ -72,7 +72,8 @@ class MovieDBApplyImpl extends MovieDBApply {
        if(value!= null){
        _movieDAO.saveDetail(value);
        }
-       return value;});
+       return value;
+     });
 
 
   @override
@@ -119,7 +120,7 @@ class MovieDBApplyImpl extends MovieDBApply {
   @override
   Stream<DetailResponse?> getSingleMovieFromDatabaseStream(int movieId) {
     getDetails(movieId);
-    return _movieDAO.watchBox().startWith(_movieDAO.getSingleMovieFromDatabaseStream(movieId)).map((event) => _movieDAO.getSingleMovie(movieId));
+    return _movieDAO.watchDetailsBox().startWith(_movieDAO.getSingleMovieFromDatabaseStream(movieId)).map((event) => _movieDAO.getSingleMovie(movieId));
   }
 
 }
