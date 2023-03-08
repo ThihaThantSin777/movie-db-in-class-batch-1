@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:movie_db/constant/color.dart';
 import 'package:movie_db/constant/dimen.dart';
+import 'package:movie_db/utils/navigate_screen.dart';
 import 'package:movie_db/widgets/easy_cached_network_image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../constant/api_constant.dart';
-import '../data/apply/movei_db_apply_impl.dart';
-import '../data/apply/movie_db_apply.dart';
-import '../data/vos/movie_vo/movie_vo.dart';
+import '../data/vos/movie_vo/movie_vo/movie_vo.dart';
+import '../pages/detail_page.dart';
+import '../widgets/gradient_container.dart';
 
 
 class BannerSection extends StatefulWidget {
   const BannerSection({
-    Key? key,}) :  super(key: key);
+    Key? key, required this.moviesList,}) :  super(key: key);
+  final List<MovieVO> moviesList;
+
 
 
   @override
@@ -21,12 +24,6 @@ class BannerSection extends StatefulWidget {
 
 class _BannerSectionState extends State<BannerSection> {
   final PageController _pageController = PageController();
-  final MovieDBApply _movieApply = MovieDBApplyImpl();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -35,27 +32,17 @@ class _BannerSectionState extends State<BannerSection> {
   }
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return widget.moviesList.isEmpty? const Center(child: CircularProgressIndicator()):SizedBox(
       height: dWh220x,
-      child: FutureBuilder<List<MovieVO>?>(
-        future: _movieApply.getNowPlayingMovies(1),
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return const Center(child: CircularProgressIndicator(),);
-          }
-          if(snapshot.hasError){
-            return const Center(child: CircularProgressIndicator());
-          }
-          final bannerList = snapshot.data?.take(5).toList();
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BannerItemsView(listBanner: bannerList ?? [],controller: _pageController,),
-              const SizedBox(height: dMp3x,),
-              PageIndicator(controller: _pageController,bannerList: bannerList ?? [],),
-            ],
-          );
-        },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          BannerItemsView(listBanner: widget.moviesList.take(5).toList(),controller: _pageController,),
+          const SizedBox(height: dMp3x,),
+          PageIndicator(controller: _pageController,bannerList: widget.moviesList.take(5).toList(),onDotClicked: (index){
+            _pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+          },),
+        ],
       ),
     );
   }
@@ -64,20 +51,19 @@ class _BannerSectionState extends State<BannerSection> {
 class PageIndicator extends StatelessWidget {
   const PageIndicator({
     Key? key,
-    required this.controller, required this.bannerList,
+    required this.controller, required this.bannerList, required this.onDotClicked,
   }) : super(key: key);
 
   final PageController controller;
   final List bannerList;
+  final Function(int index) onDotClicked;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: dMp10x,
       child: SmoothPageIndicator(
-        onDotClicked: (index) {
-          controller.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
-        },
+      onDotClicked: (index) => onDotClicked(index),
       controller: controller,
       count:  bannerList.length,
       axisDirection: Axis.horizontal,
@@ -108,7 +94,11 @@ class BannerItemsView extends StatelessWidget {
         controller: controller,
         itemCount: listBanner.length,
         itemBuilder: (context, index) {
-          return BannerItem(movieVo: listBanner[index],);
+          return GestureDetector(
+            onTap: (){
+              navigateToNextScreen(context,DetailPage(movieId: listBanner[index].id ?? 0,));
+            },
+              child: BannerItem(movieVo: listBanner[index],));
       },));
   }
 }
@@ -122,20 +112,13 @@ class BannerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = movieVo.backdropPath ?? "";
     final title = movieVo.title ?? "";
-    return Stack(
+    return image.isEmpty?const Center(child: CircularProgressIndicator()):Stack(
       children: [
         Positioned.fill(
             child: EasyCachedImage(
              imgUrl: (image.isEmpty) ? kDefaultImage : '$kPrefixImageLink$image',
             )),
-        Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Colors.transparent, cPrimary],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter)),
-            )),
+        const GradientContainerWidget(),
         const Positioned.fill(
             child: Icon(
               Icons.play_circle,
@@ -143,13 +126,13 @@ class BannerItem extends StatelessWidget {
               size: dFs40x,
             )),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: dMp10x, vertical: dMp10x),
           child: Align(
             alignment: Alignment.bottomLeft,
             child: Text(
               title,
               style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: dFs20x,
                   fontWeight: FontWeight.w600,
                   color: Colors.white),
             ),
@@ -159,3 +142,4 @@ class BannerItem extends StatelessWidget {
     );
   }
 }
+
