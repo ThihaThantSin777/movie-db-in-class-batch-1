@@ -8,7 +8,7 @@ class IconWidget extends StatelessWidget {
       {Key? key,
       required this.icon,
       this.size = kDefaultIconSize20x,
-      this.color = kDefaultIconColor})
+      this.color = kPlayButtonColor})
       : super(key: key);
   final IconData icon;
   final double? size;

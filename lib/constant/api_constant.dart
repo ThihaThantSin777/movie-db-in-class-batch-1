@@ -4,16 +4,24 @@ const kBaseURL='https://api.themoviedb.org/3';
 ///End Points
 const kGetNowPlayingEndPoint='/movie/now_playing';
 const kGetPopularMovingEndPoint='/movie/popular';
+const kGetActorsEndPoint='/person/popular';
+const kGetGeneraEndPoint='/genre/movie/list';
+const kGetMovieByGeneraEndPoint='/discover/movie';
+const kGetMovieDetailsEndPoint='/movie/{$kPathParameterMovieID}';
+const kGetMovieCreditsEndPoint='/movie/{$kPathParameterMovieID}/credits';
+const kGetMovieSimilarEndPoint='/movie/{$kPathParameterMovieID}/similar';
 
-
-//Token API Key
+///Token API Key
 const kApiKey='6ba57a8fa213613268b61de49d70fffe';
 
 
 ///Query Params
 const kQueryParamsAPIKey='api_key';
 const kQueryParamsPage='page';
+const kQueryParamsWithGenres='with_genres';
 
+///Path Parameter
+const String kPathParameterMovieID='movie_id';
 
 ///Image Constant
 const kPrefixImageLink='https://image.tmdb.org/t/p/w500';

@@ -5,8 +5,8 @@ class EasyTextWidget extends StatelessWidget {
   const EasyTextWidget({
     Key? key,
     required this.text,
-    this.fontsize = kFontsize21x,
-    this.fontWeight = kFontWeightDefault,
+    this.fontsize = kFontsize20x,
+    this.fontWeight = kFontWeightDefault100x,
     this.color = Colors.white,
     this.decoration = TextDecoration.none,
   }) : super(key: key);

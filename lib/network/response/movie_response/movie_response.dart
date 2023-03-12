@@ -1,20 +1,25 @@
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:movie_db/data/vos/date_vo/dates_vo.dart';
 import 'package:movie_db/data/vos/movie_vo/movie_vo.dart';
 
-import 'dates_vo.dart';
 
 part 'movie_response.g.dart';
 @JsonSerializable()
 class MovieResponse{
+
   @JsonKey(name: "dates")
   DatesVO? dates;
+
   @JsonKey(name: 'page')
   int? page;
+
   @JsonKey(name: 'results')
   List<MovieVO>? results;
+
   @JsonKey(name: 'total_pages')
   int? totalPages;
+
   @JsonKey(name: 'total_results')
   int? totalResult;
 
